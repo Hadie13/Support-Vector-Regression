@@ -1,0 +1,39 @@
+# Support Vector Regression - SVR
+
+import pandas as pd
+from sklearn.svm import SVR
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
+
+df = pd.read_csv('age.csv')
+df = df.drop(['Sexe'], axis = 1)
+x=df.iloc[:, :-1].values
+y=df.iloc[:, -1].values
+
+# On utilisera ici le kernel linéaire 
+regressor = SVR(kernel='linear', degree=1)
+
+# Split trainset and test set
+# TRACER LA RELATION entre poids écaillé et âge
+plt.scatter(df['Poids écaillé'], df['Age'])
+x_test, x_train, y_test, y_train = train_test_split(x, y)
+
+regressor.fit(x_train, y_train)
+y_pred = regressor.predict(x_test) # On remarque que le modèle n'est pas mal
+
+# Evaluation du modèle : affichage du score et du r2 score => on devrait
+# avoir les mêmes résultats (r2 score donne une précision sur la prédiction obtenue)
+
+print(regressor.score(x_test, y_test))
+print(r2_score(y_test, y_pred))
+
+# Modèle avec un noyau de type GAUSSIEN
+
+regressor = SVR(kernel='rbf', epsilon=1.0)
+regressor.fit(x_train, y_train)
+y_pred_2 = regressor.predict(x_test) # On aurait ici plutôt tendance à valider le premier modèle 
+
+# Evaluation du modèle, de nouveau 
+print(regressor.score(x_test, y_test))
+print(r2_score(y_test, y_pred_2))
